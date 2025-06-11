@@ -1,0 +1,415 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+  <channel>
+    <atom:link href="https://heraldofgargos.github.io/journal/generated/rss.xml" rel="self" type="application/rss+xml"/>
+    <link>https://heraldofgargos.github.io/journal/generated/rss.xml</link>
+    <title>Life of Alex</title>
+    <description>My Journal</description>
+    <lastBuildDate>Wed, 11 Jun 2025 10:12:09 GMT</lastBuildDate>
+    <item>
+      <title>Killer Instinct’s Interactive Music System</title>
+      <link>https://heraldofgargos.github.io/journal/killer-instinct-dynamic-music-system.html</link>
+      <pubDate>Sat, 15 Feb 2025 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">https://heraldofgargos.github.io/journal/killer-instinct-dynamic-music-system.html</guid>
+      <description>Picking apart the interactive music system in the 2013 Killer Instinct reboot</description>
+      <content:encoded>
+            <![CDATA[<h2>Preface</h2>
+                        <p>In this technical piece, I break down the interactive music system in the 2013 Killer
+                            Instinct Reboot for Xbox One. It’s somewhat of an old article as the research I’ve done here
+                            came
+                            out of a student game I worked on at university. The details are still very much relevant
+                            and I’ve refreshed minor tid-bits while keeping the bulk of it intact.</p>
+
+                        <figure>
+                            <img src="https://heraldofgargos.github.io/journal/assets/killer_instinct_2.jpg">
+                            <figcaption>Shadow Jago takes on Glacius</figcaption>
+                        </figure>
+
+                        <p>Right off the bat, I’ll state that Killer Instinct has the best soundtrack ever
+                            composed for a fighting game, and that’s saying a lot given the existence of both Guilty
+                            Gear and Street Fighter. I’ll also go on to state that it’s one of the greatest OSTs of the
+                            eighth gen console lineup and one of the greatest video game soundtracks ever composed. The
+                            gushing doesn’t stop there. It also has one of the best implemented
+                            interactive music systems in any video game.</p>
+
+                        <p>An interactive music system alters the music in response to player actions and changing
+                            conditions in the game. Some notable examples include SSX (2012) which applies a parametric
+                            EQ filter to the soundtrack when performing tricks, or Transistor (2014) which vertically
+                            remixes the instrumental version of the soundtrack with a vocal-only version depending on
+                            the game
+                            state.</p>
+
+                        <h2>Music states</h2>
+                        <p>Killer Instinct’s music system consists of several different states and each state
+                            corresponds to a particular condition in the game itself. The music states are:</p>
+                        <ul>
+                            <li>Fighter A Intro</li>
+                            <li>Fighter B Intro</li>
+                            <li>Intro</li>
+                            <li>Normal</li>
+                            <li>Combo</li>
+                            <li>Breaker</li>
+                            <li>Boring</li>
+                            <li>Danger</li>
+                            <li>Ending</li>
+                        </ul>
+
+                        <p>The music system uses horizontal
+                            resequencing to transition between the states based on the
+                            current condition of the match. Killer Instinct utilises Audiokinetic Wwise to implement
+                            this.</p>
+
+                        <h3>Breakdown</h3>
+
+                        <p>Now I’ll attempt to break down each of these states and explain which game conditions are
+                            required as a prerequisite to activate them. I made extensive use of Killer Instinct’s fight
+                            replay feature which allows stopping time and frame stepping. This has so many use cases and
+                            one of them is examining how the music system works.</p>
+
+                        <h4>Fighter A Intro</h4>
+                        <p>Killer Instinct is a one-versus-one fighting game. At the start of every match, a short
+                            cutscene ensues introducing each fighter. The music system includes two consecutive
+                            states to underscore each fighter’s introductory segment. The system initially starts
+                            things off in this state. After the first fighter’s introduction is delivered, the music
+                            transitions into the next state.</p>
+
+                        <h4>Fighter B Intro</h4>
+                        <p>When the second fighter’s introductory cutscene plays, the music system follows up with the
+                            introduction of additional layers in the mix.</p>
+
+                        <h4>Intro</h4>
+                        <p>After both fighters are introduced, control is handed over to the players and the match
+                            formally begins. A short musical intro will ensue and the music transitions into the Normal
+                            state.</p>
+
+                        <h4>Normal</h4>
+                        <p>As with most other pieces of music, the songs in Killer Instinct consist of
+                            distinct sections such as verse, chorus, breakdown and ending. In the Normal state, the
+                            music system only cues music segments from the verse of the current song. The game, on
+                            average, spends most of its time in this state during a match. To keep things interesting,
+                            Killer Instinct divides each verse into 4 bar segments and the sequence of the segments are
+                            randomised, generating a different permutation of the verse on each instance of playback.
+                            Wwise’s random containers are used to implement this.</p>
+
+                        <figure>
+                            <img src="https://heraldofgargos.github.io/journal/assets/killer_instinct_1.jpg">
+                            <figcaption>A 16 hit combo against Cinder</figcaption>
+                        </figure>
+
+                        <h4>Combo</h4>
+
+                        <p>The system transitions to the Combo state if either fighter achieves a 16 hit combo or higher
+                            during the match. In the combo state, the system only cues segments from the chorus of the
+                            song, which are also divided into 4 bar segments. No randomisation between the segments is
+                            performed in the Combo state. If either player is unable to attain a follow-up 16 hit combo
+                            during this period, the system transitions back to the Normal state, but allows the
+                            remaining bars of the current chorus segment to play to completion. On the other hand, if a
+                            16+ hit combo is indeed attained, the second 4 bars of the chorus will play. Additionally,
+                            if either fighter’s health drops low enough during the Combo state, the system chooses to
+                            remain in the Combo state and the 4 bar chorus segments will continue to play back-to-back.
+                        </p>
+
+                        <p>The ingenuity of the system is that the most intense parts of the soundtrack, which is
+                            typically the chorus, always play during the most intense moments of the match while the
+                            verse of the soundtrack, typically not as intense, plays during all other moments of the
+                            match.</p>
+
+                        <h4>Breaker</h4>
+
+                        <p>And the announcer goes...</p>
+
+                        <figure>
+                            <img src="https://heraldofgargos.github.io/journal/assets/killer_instinct_3.jpg">
+                            <figcaption>C-C-COMBO BREAKER!</figcaption>
+                        </figure>
+
+                        <p>The music enters the Breaker state during a combo breaker, a signature game mechanic in the
+                            Killer Instinct franchise. It is attained when a fighter is able to break free by
+                            interrupting the opponent’s combo with the right button combination. Killer Instinct’s music
+                            system acknowledges a combo
+                            breaker by interrupting the current music segment with a one-off musical breaker sequence.
+                            Afterwards, a new music segment is restarted from the beginning, depending on the current
+                            music state. It reflects the sense of a combo being interrupted and having to start over
+                            from the beginning.</p>
+
+                        <h4>Boring</h4>
+                        <p>This state kicks in if both players remain still with no controller inputs given. After a
+                            while, the music system transitions to the Boring state, playing a calmer low
+                            intense version of the soundtrack. In some cases, the system will play remixed versions of
+                            the same song from the original 1994 Killer Instinct. This state is somewhat of an easter
+                            egg in the
+                            game.</p>
+
+                        <h4>Danger</h4>
+                        <p>Each track in the lineup also has an accompanying “danger” theme that plays when the health
+                            of either
+                            fighter drops below a certain threshold, in similar vein to the classic KI games. The danger
+                            theme creates a sense of urgency as it foreshadows the impending defeat of a fighter.</p>
+
+                        <h4>Ending</h4>
+                        <p>An ending segment will play if the match ends without either player instigating an Ultra
+                            Combo (more on this later). Each track in Killer Instinct’s lineup also has multiple
+                            variants of the ending segment, and a random ending is cued every time to avoid monotony.
+                        </p>
+
+                        <h2>Musical Ultras</h2>
+                        <p>In Killer Instinct, an Ultra Combo can be used to finish off your opponent with style. It can
+                            only be activated while your opponent is in the Danger state. The 2013 reboot makes
+                            this even more stylish with the introduction of musical ultras, allowing the music to
+                            synchronise with the punches and kicks of the ultra combo. It is one of the most unique and
+                            iconic aspects of Killer Instinct’s sound design.</p>
+
+                        <figure>
+                            <video controls="" preload="">
+                                <source src="assets/killer_instinct_4.mp4" type="video/mp4">
+                            </video>
+                            <figcaption>What a musical ultra looks (and sounds) like</figcaption>
+                        </figure>
+
+                        <p>A musical ultra can be deconstructed as follows. Each theme in Killer Instinct has several
+                            ultra combo “hit” sounds associated with that theme. From the 2014 GDC presentation for
+                            Killer Instinct, I confirmed that there are 50 such hits. Each hit progressively rises in
+                            frequency, effectively forming a musical scale. Each fighter is then assigned a sequence of
+                            notes from this scale that the game engine cues for every punch and kick during the ultra
+                            combo. Because every theme in the soundtrack has its own bank of ultra combo hits, it sounds
+                            cohesive when played alongside that theme. And because the sequence of hits chosen from the
+                            bank is consistent for each fighter, the melody itself remains consistent
+                            across themes.</p>
+
+                        <h2>Instinct Meter</h2>
+                        <p>Yet another neat but subtle music feature is how Killer Instinct makes use of vertical
+                            remixing to introduce a musical flourish into the mix as the fighter’s instinct meter (the
+                            yellow bar in the screenshots) fills up. There are two distinct layers for this, per each
+                            fighter. The layers themselves are also panned left or right depending on the current
+                            position of the respective fighter.</p>
+
+                        <h2>Wrapping things up</h2>
+
+                        <p>The soundtrack of Killer Instinct, composed by Mick Gordon, was spectacular. It modernised
+                            the original themes composed by Robin Beanland while remaining faithful to the KI identity.
+                            Celldweller and Atlas Plug complimented the lineup by composing additional tracks for Killer
+                            Instinct Season 3 while Mick went onto compose the score for the highly acclaimed DOOM
+                            (2016). Jean-Edouard Miclot was the audio director for KI and ensured that Mick had complete
+                            ownership of the music, including both composition and implementation. I also have strong
+                            reason to believe that Killer Instinct inspired
+                            the music implementation for Devil May Cry 5, as its music system follows a similar
+                            framework. Casey Edwards and Ali Edwards, who worked with Mick on KI, are also the artists
+                            behind DMC 5’s most beloved “Devil Trigger” theme.</p>
+
+                        <p>In conclusion, Killer Instinct’s sound design team went above and beyond to deliver one of
+                            the best sounding games of the eighth generation console lineup, and should continue to be
+                            commemorated for years to come. FIGHT ON!</p>
+
+                        <p>All screenshots and videos in this article were captured by me on the PC (Steam) release of
+                            Killer Instinct.
+                            Additional sources used are marked at the end of the article.</p>
+                        <cite><a target="_blank" href="https://gdcvault.com/play/1020402/Next-Gen-Audio-in-Killer">Next-gen Audio in
+                                Killer Instinct – GDC 2014</a></cite>]]>
+      </content:encoded>
+</item>
+<item>
+      <title>My journey into motorcycling</title>
+      <link>https://heraldofgargos.github.io/journal/my-journey-into-motorcycling.html</link>
+      <pubDate>Mon, 20 Jan 2025 00:00:00 GMT</pubDate>
+      <guid isPermaLink="false">https://heraldofgargos.github.io/journal/my-journey-into-motorcycling.html</guid>
+      <description>The story behind why I got into motorcycling, my personal experience with it, and some pro tips for beginner riders</description>
+      <content:encoded>
+            <![CDATA[<h2>“Ride like everybody is out to kill you”</h2>
+                        <p>— is a phrase every rider has heard
+                            sooner or later in their motorcycling journey. In the state of Victoria in Australia,
+                            motorcycles make up 4% of all registered vehicles, yet account for 17% of deaths and serious
+                            injuries. Similar figures can also be seen in the UK and a vast majority of cases are due
+                            to the negligence of other road users. The dangers associated with motorcycles are
+                            well-documented, widely acknowledged
+                            and backed up by statistics. With all that said, how did I possibly end up here?</p>
+
+                        <p>To the surprise of friends and close associates, I bought a motorcycle early last year,
+                            incentivised by my declining mental health at the time. Many motorcyclists find
+                            that riding significantly contributes to stress reduction and improves their mental
+                            well-being. The demands of motorcycling necessitate constant alertness and the rider’s
+                            complete mental focus. It is, in its own unique way, a form of mindfulness meditation. After
+                            nearly a year of motorcycling, do I agree with these claims? To a great extent, I do.
+                            There’s also neuroscience research to back up these claims conducted by researchers at UCLA.
+                            They found that riding a motorcycle for 20 minutes resulted in decreased cortisol levels,
+                            greater tolerance to distractions, and enhanced sensory focus in participants.</p>
+                        <p>On my motorcycling journey, I discovered that there are many other benefits to riding other
+                            than its therapeutic effects. A vast majority of these benefits are often understated
+                            and overshadowed by the prevailing negative connotations associated with motorcycling.</p>
+
+                        <h2>It’s not all doom and gloom</h2>
+                        <p>Riding a motorcycle creates a deep sense of unity between you and your surroundings. You feel
+                            the
+                            wind’s exhilarating rush, a sense of freedom. You feel the temperatures shift ever so
+                            slightly as you move from shade to sun. You’re fully enveloped in the sights, sounds and
+                            smells of your surroundings. All these elements come together to create the perfect
+                            adventure for
+                            travellers wanting to immerse themselves in their environment. If travelling solo isn’t your
+                            thing, you can always bring along a passenger to share the experience with. A motorcycle is
+                            an
+                            excellent choice for travel enthusiasts and adventure seekers.</p>
+                        <figure>
+                            <img src="https://heraldofgargos.github.io/journal/assets/duke390-adelaide-hills.jpg">
+                            <figcaption>Sunset over the picturesque Adelaide Hills, captured on a motorcycling tour.
+                            </figcaption>
+                        </figure>
+
+                        <p>A motorcycle can make commuting to work fun. When rush hour hits, roads transform into
+                            car parks and the crawl begins. On a motorcycle you won’t have to
+                            spend too long in
+                            asphalt purgatory. Here in Australia, motorcyclists can filter through stopped and slow
+                            moving traffic and it's completely legal if done safely. It’s also legal in the UK and most
+                            states of the USA. However, you may not exceed 30 km/h while doing so, as that is considered
+                            “lane-splitting” and is unlawful. Coming up with the most efficient strategy to get through
+                            traffic is a fun little exercise to play on your commute, as long as you do it safely and
+                            responsibly.</p>
+                        <p>On a motorcycle, other road users will be more open to striking a conversation with you while
+                            stopped at the lights or in traffic. Me being an introvert, I usually do not initiate these
+                            conversations but there have been numerous instances where someone would put down their car
+                            window to compliment my bike, or a kid at the backseat would start waving. You will also get
+                            lots of nods from other motorcyclists and it’s always a great moment when that happens.</p>
+                        <p>Riding a motorcycle also gives you unbeatable fuel efficiency and your commute contributes
+                            less emissions to the environment compared to the average car driver. A motorcycle may be a
+                            poor choice for hauling goods and people but for a white-collar office worker like myself,
+                            it makes for an excellent commuting machine.</p>
+                        <p>Oh, and as an added bonus, riding a motorcycle burns a lot more calories than you might
+                            think. According to Dr. Michael, a radiologist who rides motorcycles, you can expect to burn
+                            up to 300 calories per every hour of riding. Although the actual number varies quite a bit
+                            based on the intensity of riding. For example, off-roaders and enduro riders will burn more
+                            calories than the average city commuter. Nevertheless, it’s a nice added perk for those
+                            wanting to stay fit.</p>
+
+                        <h2>Paying it forward</h2>
+                        <p>Being entirely self-taught, my motorcycling knowledge is largely derived from my own personal
+                            experience but also from the insights shared by fellow riders. Now
+                            I’m paying it forward by sharing my own experiences and some pro tips. I hope this may be
+                            beneficial to
+                            someone who’s new to riding or is interested in getting into it.</p>
+
+                        <h3>Like taming a horse</h3>
+                        <p>Learn and understand how your motorcycle behaves. Emphasis on “your” as
+                            every motorcycle is tuned differently and handles differently. The throttle response, the
+                            turning radius, the suspension rebound, and the biting point of the clutch are all
+                            different from model to model. Which is why it’s extremely important that you learn and
+                            understand the characteristics of your own motorcycle. The phrase “become one with the bike”
+                            gets thrown around a lot in motorcycling circles and for good reason. Even an experienced
+                            motorcyclist with many years of riding experience can be considered a beginner on a bike
+                            that
+                            they have never ridden before. Take your motorcycle to a quiet place like an empty car park
+                            where you can safely experiment with its controls and learn how it responds.</p>
+
+                        <h3>“Pick a bike that doesn’t freak you out” - Keanu Reeves</h3>
+                        <p>Obviously, before you do any of that, you need to pick a bike. You should
+                            take Keanu’s advice here (he’s always right, anyway).</p>
+                        <p>Stick to a sub-400cc motorcycle if you’ve never ridden before. Anything higher than this will
+                            most likely overwhelm you. Here in Australia, there is also a CC limit imposed on
+                            motorcycles that are considered “learner approved” and as of writing, the most powerful
+                            learner approved motorcycle is the Yamaha MT-07 LAMS edition with an engine capacity of
+                            655cc.</p>
+                        <p>Aside from power, you should choose a bike with a seating position that you feel comfortable
+                            with. Sport bikes like the Kawasaki Ninja 400 typically require the rider to assume a
+                            forward-leaning position while naked bikes like the KTM 390 Duke or Kawasaki Z400 offer a
+                            more upright seating position. For everyday riding, I consider the upright seating
+                            position of a naked bike far more comfortable than the forward-leaning position of a sport
+                            bike. But your experience may differ. Have a play around with several different motorcycles
+                            at local dealerships and see which feels the most comfortable.</p>
+
+                        <figure>
+                            <img src="https://heraldofgargos.github.io/journal/assets/duke390-gorge-road.jpg">
+                            <figcaption>My KTM 390 which I rode on my advanced motorcycle test and achieved a
+                                perfect result with no faults.</figcaption>
+                        </figure>
+
+                        <h3>Don’t skimp out on gear</h3>
+                        <p>Get yourself a decent helmet from a reputable brand. I strongly advise a full face helmet
+                            with a Pinlock anti-fog insert. Beginner riders often neglect to buy protective equipment
+                            when they start out. Acknowledge that as a beginner, you are at your most vulnerable. So
+                            don’t skimp out on gear. Get yourself an abrasion resistant riding jacket, pants and boots.
+                            If the typical “rider look” isn’t your style, there are plenty of riding gear that
+                            masquerade as casual everyday clothes. But on the inside, they come with a lot of neat
+                            safety features like weather proofing, kevlar lining, knee guards and elbow guards. With
+                            options like these, you can express yourself while riding safely. Remember that the colour
+                            of the gear you wear matters. White or brightly coloured gear helps you stand out and be
+                            easily seen by other road users.</p>
+
+                        <h3>True skill is in riding slow, not fast</h3>
+                        <p>As it turns out, riding a motorcycle on a straight road at 100 km/h requires almost no
+                            effort. Anybody could do that. On a motorcycle equipped with cruise control, this could be
+                            done with your hands completely off the handlebars. Taking corners at 100 km/h is a
+                            different story though. As a motorcyclist, your mastery of slow speed manoeuvres is a strong
+                            indicator of your overall ability. Slow speed manoeuvres involve riding your motorcycle at
+                            walking speed (under 5 km/h) with both feet up and making tight U-turns, among other things.
+                            Pulling these off requires proper balance, good peripheral vision, and solid clutch control.
+                            Here in Australia, all riders must complete an advanced motorcycle training course and the
+                            accompanying practical test before they are allowed their full motorcycle license. And most
+                            advanced motorcycle courses spend an exorbitant amount of time teaching these concepts and
+                            making you practice them out on the range.</p>
+                        <p>As a rider, I advise that you take matters into your own hands and spend some time practicing
+                            these manoeuvres at your local car park. It could be just a quick 20 minute session after
+                            you get back from work or uni. It will make you a safer rider as well as help you get
+                            through the advanced motorcycle test with ease.</p>
+                        <p>Your choice of motorcycle matters when it comes to slow speed manoeuvres. If you choose to
+                            get a sport bike such as the Kawasaki Ninja 400, you will be at a disadvantage as the form
+                            factor and seating position make pulling off slow manoeuvres more difficult.
+                            Once again, I recommend picking a naked bike because they are much better suited for slow
+                            speed manoeuvres than sport bikes or cruisers. That’s in addition to their comfortable
+                            upright seating position which also makes them more suitable for everyday riding. The
+                            Kawasaki Z400, the Yamaha MT–03 and KTM’s 390 Duke are excellent beginner naked bikes. When
+                            taking the advanced motorcycle test in Australia, you can choose to bring your
+                            own motorcycle to do the test with. All three motorcycles I’ve listed previously are
+                            great choices for the test. Obviously, your ability as a rider matters greatly here, it’s
+                            not just about the type of motorcycle you ride.</p>
+
+                        <h3>Zero BAC, at all times</h3>
+                        <p>Aim for zero blood alcohol content if you need to ride your motorcycle. Riding a motorcycle
+                            requires far
+                            more finesse and skill than driving a car. Your sense of balance is critical while riding.
+                            Even a little bit of alcohol in your system can impair your senses and put you off balance.
+                            Don’t drink and ride, it’s not worth it.</p>
+
+                        <h3>Lane filter responsibly</h3>
+                        <p>Lane filtering with a motorcycle is both scary and rewarding at the same time. Only lane
+                            filter if you feel like it’s safe to do so and stay within a reasonable speed. In Australia,
+                            filtering at over 30 km/h is illegal and will get you pulled over. As a rule of thumb, I
+                            also avoid filtering next to large vehicles such as lorries and buses. If you are filtering
+                            up to the lights, I advise staying behind the first row of vehicles instead of filtering
+                            straight up to the front. The first row of vehicles will start moving as soon as the lights
+                            go green and if you happen to be in the middle of this row when that happens, it will put
+                            you in a dangerous situation. Note that drivers stuck in traffic are often distracted, so
+                            always pay close attention to other vehicles while filtering. Turning on your motorcycle’s
+                            hazard lights is a good way to draw attention to yourself and also signal to other road
+                            users that you are filtering. Make sure to turn them off afterwards. You will only get good
+                            at lane filtering the more you do it, but please do it responsibly and safely.</p>
+
+                        <h3>Minimise risks, maximise rewards</h3>
+                        <p>I’ll wrap things up by stating that while motorcycling has its risks, those risks can be
+                            mitigated by proper training, wearing safety gear, maintaining good awareness, and by
+                            following the rules. I would argue that a cyclist riding a push bicycle would be at a
+                            greater risk than a skilled motorcyclist who sticks to the above principles. Most push
+                            cyclists do not wear any protective gear, are completely exposed and do not have the
+                            capability to quickly get out of sticky situations, should one arise.
+                            Both cyclists and motorcyclists should take extra care at all times.</p>
+
+                        <p>Motorcycles can be a great stress reliever, a highly efficient commuting machine and also
+                            perfect for travel enthusiasts wanting to immerse themselves in their surroundings. You just
+                            don’t get the same experience inside an air conditioned metal cage. I cannot understate the
+                            risks however. But I also think the benefits can outweigh the risks, if those risks are
+                            properly managed.</p>
+
+                        <p>Thanks for making it to the end and I hope it was enlightening. I wish you all the best in
+                            your own motorcycling journey.</p>
+
+                        <p>Quoted sources:</p>
+                        <cite><a target="_blank" href="https://www.tac.vic.gov.au/road-safety/road-users/motorcycle-riders">Motorcycle
+                                riders - Transport Accident Commission Victoria</a></cite>
+                        <cite><a target="_blank" href="https://www.sciencedirect.com/science/article/abs/pii/S0006899320305618">Modulation
+                                of attention and stress with arousal: The mental and physical effects of riding a
+                                motorcycle</a></cite>
+                        <cite><a target="_blank" href="https://www.youtube.com/channel/UCrWD2t4_MnAwuAWWzbwrxPg">Dr.
+                                Michael's
+                                Motorcycles</a></cite>
+                        <cite><a target="_blank" href="https://www.youtube.com/watch?v=O4iGNXsqghs">Keanu Reeves on
+                                motorcycles</a></cite>]]>
+      </content:encoded>
+</item>
+
+  </channel>
+</rss>

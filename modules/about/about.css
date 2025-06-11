@@ -1,0 +1,42 @@
+#about {
+    font-size: 0.94rem;
+
+    ul li {
+        margin-bottom: 8px;
+    }
+
+    .spacer {
+        margin-bottom: 24px;
+        margin-top: 24px;
+    }
+
+    .pop-quiz-choices {
+        margin-left: 16px;
+
+        div {
+            display: inline-block;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+    }
+
+    .pop-quiz-choices-invalidated {
+        color: orangered;
+
+        span {
+            text-decoration: line-through;
+        }
+    }
+
+    .pop-quiz-answer {
+        display: none;
+        animation-duration: var(--anim-duration);
+        animation-timing-function: ease;
+        animation-fill-mode: forwards;
+        opacity: 0;
+
+        .answer {
+            color: mediumseagreen
+        }
+    }
+}

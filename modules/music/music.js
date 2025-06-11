@@ -1,0 +1,1 @@
+import{renderHtml,renderHeader}from"../shared/common.js";async function render(){var e=document.querySelector(".container .page"),r=document.createElement("main");r.id="music",r.classList.add("content"),renderHeader(r,"Music"),renderHtml(r,"modules/music/music.html"),e.replaceChildren(r)}export{render};

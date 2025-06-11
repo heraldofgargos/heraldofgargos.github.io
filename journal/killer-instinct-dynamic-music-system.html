@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="../favicon.svg">
+    <link rel="stylesheet" href="../main.css">
+    <title>Killer Instinct’s Interactive Music System</title>
+    <meta name="author" content="Alex Fonseka">
+    <meta name="description" content="Picking apart the interactive music system in the 2013 Killer Instinct reboot">
+    <meta name="tags" content="Programming, Games, Music">
+    <meta name="cover" content="assets/killer_instinct_3.jpg">
+</head>
+
+<body>
+    <div class="css-nesting-supported">
+        <div class="container">
+            <div class="page">
+                <main id="journal" class="content">
+                    <article class="journal-entry-container">
+                        <header>
+                            <a href="/#journal" class="btn-back"></a>
+                            <h1>Killer Instinct’s Interactive Music System</h1>
+                            <span class="author">Alex Fonseka</span>
+                            <time datetime="2025-02-15">15 February 2025</time>
+                        </header>
+                        <h2>Preface</h2>
+                        <p>In this technical piece, I break down the interactive music system in the 2013 Killer
+                            Instinct Reboot for Xbox One. It’s somewhat of an old article as the research I’ve done here
+                            came
+                            out of a student game I worked on at university. The details are still very much relevant
+                            and I’ve refreshed minor tid-bits while keeping the bulk of it intact.</p>
+
+                        <figure>
+                            <img src="assets/killer_instinct_2.jpg" />
+                            <figcaption>Shadow Jago takes on Glacius</figcaption>
+                        </figure>
+
+                        <p>Right off the bat, I’ll state that Killer Instinct has the best soundtrack ever
+                            composed for a fighting game, and that’s saying a lot given the existence of both Guilty
+                            Gear and Street Fighter. I’ll also go on to state that it’s one of the greatest OSTs of the
+                            eighth gen console lineup and one of the greatest video game soundtracks ever composed. The
+                            gushing doesn’t stop there. It also has one of the best implemented
+                            interactive music systems in any video game.</p>
+
+                        <p>An interactive music system alters the music in response to player actions and changing
+                            conditions in the game. Some notable examples include SSX (2012) which applies a parametric
+                            EQ filter to the soundtrack when performing tricks, or Transistor (2014) which vertically
+                            remixes the instrumental version of the soundtrack with a vocal-only version depending on
+                            the game
+                            state.</p>
+
+                        <h2>Music states</h2>
+                        <p>Killer Instinct’s music system consists of several different states and each state
+                            corresponds to a particular condition in the game itself. The music states are:</p>
+                        <ul>
+                            <li>Fighter A Intro</li>
+                            <li>Fighter B Intro</li>
+                            <li>Intro</li>
+                            <li>Normal</li>
+                            <li>Combo</li>
+                            <li>Breaker</li>
+                            <li>Boring</li>
+                            <li>Danger</li>
+                            <li>Ending</li>
+                        </ul>
+
+                        <p>The music system uses horizontal
+                            resequencing to transition between the states based on the
+                            current condition of the match. Killer Instinct utilises Audiokinetic Wwise to implement
+                            this.</p>
+
+                        <h3>Breakdown</h3>
+
+                        <p>Now I’ll attempt to break down each of these states and explain which game conditions are
+                            required as a prerequisite to activate them. I made extensive use of Killer Instinct’s fight
+                            replay feature which allows stopping time and frame stepping. This has so many use cases and
+                            one of them is examining how the music system works.</p>
+
+                        <h4>Fighter A Intro</h4>
+                        <p>Killer Instinct is a one-versus-one fighting game. At the start of every match, a short
+                            cutscene ensues introducing each fighter. The music system includes two consecutive
+                            states to underscore each fighter’s introductory segment. The system initially starts
+                            things off in this state. After the first fighter’s introduction is delivered, the music
+                            transitions into the next state.</p>
+
+                        <h4>Fighter B Intro</h4>
+                        <p>When the second fighter’s introductory cutscene plays, the music system follows up with the
+                            introduction of additional layers in the mix.</p>
+
+                        <h4>Intro</h4>
+                        <p>After both fighters are introduced, control is handed over to the players and the match
+                            formally begins. A short musical intro will ensue and the music transitions into the Normal
+                            state.</p>
+
+                        <h4>Normal</h4>
+                        <p>As with most other pieces of music, the songs in Killer Instinct consist of
+                            distinct sections such as verse, chorus, breakdown and ending. In the Normal state, the
+                            music system only cues music segments from the verse of the current song. The game, on
+                            average, spends most of its time in this state during a match. To keep things interesting,
+                            Killer Instinct divides each verse into 4 bar segments and the sequence of the segments are
+                            randomised, generating a different permutation of the verse on each instance of playback.
+                            Wwise’s random containers are used to implement this.</p>
+
+                        <figure>
+                            <img src="assets/killer_instinct_1.jpg" />
+                            <figcaption>A 16 hit combo against Cinder</figcaption>
+                        </figure>
+
+                        <h4>Combo</h4>
+
+                        <p>The system transitions to the Combo state if either fighter achieves a 16 hit combo or higher
+                            during the match. In the combo state, the system only cues segments from the chorus of the
+                            song, which are also divided into 4 bar segments. No randomisation between the segments is
+                            performed in the Combo state. If either player is unable to attain a follow-up 16 hit combo
+                            during this period, the system transitions back to the Normal state, but allows the
+                            remaining bars of the current chorus segment to play to completion. On the other hand, if a
+                            16+ hit combo is indeed attained, the second 4 bars of the chorus will play. Additionally,
+                            if either fighter’s health drops low enough during the Combo state, the system chooses to
+                            remain in the Combo state and the 4 bar chorus segments will continue to play back-to-back.
+                        </p>
+
+                        <p>The ingenuity of the system is that the most intense parts of the soundtrack, which is
+                            typically the chorus, always play during the most intense moments of the match while the
+                            verse of the soundtrack, typically not as intense, plays during all other moments of the
+                            match.</p>
+
+                        <h4>Breaker</h4>
+
+                        <p>And the announcer goes...</p>
+
+                        <figure>
+                            <img src="assets/killer_instinct_3.jpg" />
+                            <figcaption>C-C-COMBO BREAKER!</figcaption>
+                        </figure>
+
+                        <p>The music enters the Breaker state during a combo breaker, a signature game mechanic in the
+                            Killer Instinct franchise. It is attained when a fighter is able to break free by
+                            interrupting the opponent’s combo with the right button combination. Killer Instinct’s music
+                            system acknowledges a combo
+                            breaker by interrupting the current music segment with a one-off musical breaker sequence.
+                            Afterwards, a new music segment is restarted from the beginning, depending on the current
+                            music state. It reflects the sense of a combo being interrupted and having to start over
+                            from the beginning.</p>
+
+                        <h4>Boring</h4>
+                        <p>This state kicks in if both players remain still with no controller inputs given. After a
+                            while, the music system transitions to the Boring state, playing a calmer low
+                            intense version of the soundtrack. In some cases, the system will play remixed versions of
+                            the same song from the original 1994 Killer Instinct. This state is somewhat of an easter
+                            egg in the
+                            game.</p>
+
+                        <h4>Danger</h4>
+                        <p>Each track in the lineup also has an accompanying “danger” theme that plays when the health
+                            of either
+                            fighter drops below a certain threshold, in similar vein to the classic KI games. The danger
+                            theme creates a sense of urgency as it foreshadows the impending defeat of a fighter.</p>
+
+                        <h4>Ending</h4>
+                        <p>An ending segment will play if the match ends without either player instigating an Ultra
+                            Combo (more on this later). Each track in Killer Instinct’s lineup also has multiple
+                            variants of the ending segment, and a random ending is cued every time to avoid monotony.
+                        </p>
+
+                        <h2>Musical Ultras</h2>
+                        <p>In Killer Instinct, an Ultra Combo can be used to finish off your opponent with style. It can
+                            only be activated while your opponent is in the Danger state. The 2013 reboot makes
+                            this even more stylish with the introduction of musical ultras, allowing the music to
+                            synchronise with the punches and kicks of the ultra combo. It is one of the most unique and
+                            iconic aspects of Killer Instinct’s sound design.</p>
+
+                        <figure>
+                            <video controls preload>
+                                <source src="assets/killer_instinct_4.mp4" type="video/mp4">
+                            </video>
+                            <figcaption>What a musical ultra looks (and sounds) like</figcaption>
+                        </figure>
+
+                        <p>A musical ultra can be deconstructed as follows. Each theme in Killer Instinct has several
+                            ultra combo “hit” sounds associated with that theme. From the 2014 GDC presentation for
+                            Killer Instinct, I confirmed that there are 50 such hits. Each hit progressively rises in
+                            frequency, effectively forming a musical scale. Each fighter is then assigned a sequence of
+                            notes from this scale that the game engine cues for every punch and kick during the ultra
+                            combo. Because every theme in the soundtrack has its own bank of ultra combo hits, it sounds
+                            cohesive when played alongside that theme. And because the sequence of hits chosen from the
+                            bank is consistent for each fighter, the melody itself remains consistent
+                            across themes.</p>
+
+                        <h2>Instinct Meter</h2>
+                        <p>Yet another neat but subtle music feature is how Killer Instinct makes use of vertical
+                            remixing to introduce a musical flourish into the mix as the fighter’s instinct meter (the
+                            yellow bar in the screenshots) fills up. There are two distinct layers for this, per each
+                            fighter. The layers themselves are also panned left or right depending on the current
+                            position of the respective fighter.</p>
+
+                        <h2>Wrapping things up</h2>
+
+                        <p>The soundtrack of Killer Instinct, composed by Mick Gordon, was spectacular. It modernised
+                            the original themes composed by Robin Beanland while remaining faithful to the KI identity.
+                            Celldweller and Atlas Plug complimented the lineup by composing additional tracks for Killer
+                            Instinct Season 3 while Mick went onto compose the score for the highly acclaimed DOOM
+                            (2016). Jean-Edouard Miclot was the audio director for KI and ensured that Mick had complete
+                            ownership of the music, including both composition and implementation. I also have strong
+                            reason to believe that Killer Instinct inspired
+                            the music implementation for Devil May Cry 5, as its music system follows a similar
+                            framework. Casey Edwards and Ali Edwards, who worked with Mick on KI, are also the artists
+                            behind DMC 5’s most beloved “Devil Trigger” theme.</p>
+
+                        <p>In conclusion, Killer Instinct’s sound design team went above and beyond to deliver one of
+                            the best sounding games of the eighth generation console lineup, and should continue to be
+                            commemorated for years to come. FIGHT ON!</p>
+
+                        <p>All screenshots and videos in this article were captured by me on the PC (Steam) release of
+                            Killer Instinct.
+                            Additional sources used are marked at the end of the article.</p>
+                        <cite><a target="_blank"
+                                href="https://gdcvault.com/play/1020402/Next-Gen-Audio-in-Killer">Next-gen Audio in
+                                Killer Instinct – GDC 2014</a></cite>
+                    </article>
+                </main>
+            </div>
+        </div>
+    </div>
+    <div class="css-nesting-unsupported">
+        <span>Sorry, but your browser does not meet the minimum requirements to view this site. Please update your
+            browser or consider switching to a different browser.</span>
+    </div>
+</body>
+
+</html>

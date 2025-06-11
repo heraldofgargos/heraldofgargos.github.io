@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/x-icon" href="favicon.svg">
+    <link rel="stylesheet" href="main.css">
+    <noscript>You must enable JavaScript to use this site</noscript>
+    <script>
+        var supportsES6 = function () {
+            try {
+                new Function("(a = 0) => a");
+                return HTMLScriptElement.supports('module');
+            }
+            catch (err) {
+                return false;
+            }
+        }();
+
+        if (supportsES6) {
+            const script = document.createElement('script');
+            script.type = 'module'
+            script.src = 'main.js'
+            document.head.appendChild(script)
+        } else {
+            window.alert('Sorry, but your browser does not meet the minimum requirements to view this site. Please update your browser or consider switching to a different browser.')
+        }
+    </script>
+    <title>Life of Alex</title>
+    <meta name="description"
+        content="My personal website and blog, where I share my journey and updates on various side projects">
+</head>
+
+<body>
+    <div class="css-nesting-supported">
+        <div class="container">
+            <div class="page"></div>
+            <div class="hero-image-container">
+                <div class="hero-image-grid">
+                    <div class="hero-image-curtain"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="css-nesting-unsupported">
+        <span>Sorry, but your browser does not meet the minimum requirements to view this site. Please update your
+            browser or consider switching to a different browser.</span>
+    </div>
+</body>
+
+</html>

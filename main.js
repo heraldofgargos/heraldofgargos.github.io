@@ -1,0 +1,1 @@
+import{navigate}from"./modules/shared/nav.js";navigate(window.location.hash);

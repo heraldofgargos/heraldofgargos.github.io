@@ -1,0 +1,1 @@
+export default[{title:"Sri Lanka 2024",description:"A cinematic edit of all the places I visited in Sri Lanka in December 2024",thumbnail:"modules/videos/thumbnails/sri_lanka_2024.jpg",url:"https://www.youtube.com/watch?v=L8SD2pHWQ1E"}];

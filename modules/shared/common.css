@@ -1,0 +1,172 @@
+main {
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation-duration: var(--anim-duration);
+        animation-timing-function: ease;
+
+        .title {
+            font-family: 'Bebas Neue';
+            font-size: 3.4rem;
+            font-weight: normal;
+        }
+
+        .btn-close {
+            opacity: 0.4;
+            position: relative;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            transition: opacity var(--anim-duration) ease;
+            animation-duration: var(--anim-duration);
+            animation-timing-function: ease;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            --btn-color: #e1e1e1;
+        }
+
+        @media (prefers-color-scheme: light) {
+            --btn-color: #333;
+        }
+
+        .btn-close:before,
+        .btn-close:after {
+            position: absolute;
+            top: 5px;
+            left: 25px;
+            content: ' ';
+            height: 38px;
+            width: 4px;
+            border-radius: 2px;
+            background-color: var(--btn-color);
+            transform: rotate(-45deg);
+        }
+
+        .btn-close:before {
+            transform: rotate(45deg);
+        }
+    }
+}
+
+@keyframes slide-in-from-top {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.hero-image-container {
+    display: block;
+    flex: 1;
+    height: 100vh;
+
+    .hero-image-grid {
+        display: grid;
+        height: inherit;
+        overflow: hidden;
+        background-color: var(--background-color);
+
+        .hero-image-curtain {
+            z-index: 1;
+            grid-column: 1;
+            grid-row: 1;
+            background-color: var(--background-color);
+            position: relative;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease
+        }
+
+        .hero-image {
+            grid-column: 1;
+            grid-row: 1;
+            opacity: 0;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            animation: hero-image-scale 4s ease 0s 1 normal forwards, hero-image-fade 1s ease 0s 1 normal forwards;
+
+            @media (prefers-color-scheme: dark) {
+                --hero-image-title-bg-color: black;
+                --hero-image-title-color: white;
+            }
+
+            @media (prefers-color-scheme: light) {
+                --hero-image-title-bg-color: white;
+                --hero-image-title-color: black;
+            }
+
+            .hero-image-title-bg {
+                background-color: var(--hero-image-title-bg-color);
+                opacity: 0;
+                transition: opacity 2s ease;
+                position: relative;
+                height: 100%;
+            }
+
+            .hero-image-title-bg:hover {
+                opacity: 0.71;
+            }
+
+            .hero-image-title-container {
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 1s ease;
+                position: absolute;
+                top: 75%;
+                width: 100%;
+                color: var(--hero-image-title-color);
+                text-align: center;
+
+                .title-1 {
+                    font-size: 1.8rem;
+                }
+
+                .title-2 {
+                    font-size: 1.2rem;
+                }
+            }
+
+            .hero-image-title-bg:hover+.hero-image-title-container {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .hero-image-container {
+        display: none;
+    }
+}
+
+@keyframes hero-image-fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes hero-image-scale {
+    from {
+        transform: scale(1.1);
+    }
+
+    to {
+        transform: scale(1.0);
+    }
+}
